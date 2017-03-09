@@ -330,6 +330,18 @@ function show_help() { # Display some help
     fi
 }
 
+function createDirectory() { #Try to create destination directory if it does not exist
+    log 3 "trying to create the directories in the given path"
+    mkdir -p "$OPTARG"
+    if [ $? != 0 ]; then
+        log 1 "Directory specified could not be created.";
+        show_help; exit 1
+    else
+        pathtomusic="$OPTARG"
+        log 3 "sucessful"
+    fi
+}
+
 function get_arg() { # Parse arguments
     while getopts "crskmado:l:p:hdq" opt
     do
@@ -357,7 +369,8 @@ function get_arg() { # Parse arguments
                 if [ -d "$OPTARG" ]; then
                     pathtomusic="$OPTARG"
                 else
-                    log 1 "Directory specified does not exist."; show_help; exit 1
+                    log 3 "Directory specified does not exist.";
+                    createDirectory;
                 fi
                 ;;
             d) # debug
